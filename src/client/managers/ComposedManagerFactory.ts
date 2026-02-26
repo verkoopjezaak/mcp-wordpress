@@ -160,41 +160,41 @@ export class ComposedWordPressClient {
   /**
    * Get posts
    */
-  async getPosts(params?: unknown): Promise<unknown[]> {
-    return this.request("GET", "/wp/v2/posts", params);
+  async getPosts(params?: unknown, postType: string = "posts"): Promise<unknown[]> {
+    return this.request("GET", `/wp/v2/${postType}`, params);
   }
 
   /**
    * Get single post
    */
-  async getPost(id: number): Promise<unknown> {
+  async getPost(id: number, postType: string = "posts"): Promise<unknown> {
     this.dependencies.validator.validateWordPressId(id, "post ID");
-    return this.request("GET", `/wp/v2/posts/${id}`);
+    return this.request("GET", `/wp/v2/${postType}/${id}`);
   }
 
   /**
    * Create post
    */
-  async createPost(postData: unknown): Promise<unknown> {
+  async createPost(postData: unknown, postType: string = "posts"): Promise<unknown> {
     this.dependencies.validator.validateRequired(postData as Record<string, unknown>, ["title", "content"]);
-    return this.request("POST", "/wp/v2/posts", postData);
+    return this.request("POST", `/wp/v2/${postType}`, postData);
   }
 
   /**
    * Update post
    */
-  async updatePost(id: number, postData: unknown): Promise<unknown> {
+  async updatePost(id: number, postData: unknown, postType: string = "posts"): Promise<unknown> {
     this.dependencies.validator.validateWordPressId(id, "post ID");
-    return this.request("PUT", `/wp/v2/posts/${id}`, postData);
+    return this.request("PUT", `/wp/v2/${postType}/${id}`, postData);
   }
 
   /**
    * Delete post
    */
-  async deletePost(id: number, force: boolean = false): Promise<unknown> {
+  async deletePost(id: number, force: boolean = false, postType: string = "posts"): Promise<unknown> {
     this.dependencies.validator.validateWordPressId(id, "post ID");
     const params = force ? { force: true } : {};
-    return this.request("DELETE", `/wp/v2/posts/${id}`, params);
+    return this.request("DELETE", `/wp/v2/${postType}/${id}`, params);
   }
 
   /**

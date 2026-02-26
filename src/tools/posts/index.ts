@@ -91,6 +91,10 @@ export class PostTools {
     switch (toolName) {
       case "wp_list_posts":
         return this.handleListPosts.bind(this);
+      case "wp_list_verhalen":
+        return this.handleListVerhalen.bind(this);
+      case "wp_list_reviews":
+        return this.handleListReviews.bind(this);
       case "wp_get_post":
         return this.handleGetPost.bind(this);
       case "wp_create_post":
@@ -124,6 +128,9 @@ export class PostTools {
       params = {};
     }
 
+    // Extract post_type if provided (for custom post types like 'verhalen', 'review')
+    const postType = (params.post_type as string) || undefined;
+
     // Extract only the relevant query parameters, excluding MCP-specific fields
     const queryParams: PostQueryParams = {};
 
@@ -145,7 +152,40 @@ export class PostTools {
     if (params.tags !== undefined) queryParams.tags = params.tags as number[];
     if (params.offset !== undefined) queryParams.offset = params.offset as number;
 
+    // If custom post type, use client directly with postType parameter
+    if (postType) {
+      const posts = await client.getPosts(queryParams, postType);
+      if (posts.length === 0) {
+        return `No ${postType} found. Try adjusting your search criteria.`;
+      }
+      return posts;
+    }
+
     return handleListPosts(client, queryParams);
+  }
+
+  /**
+   * Lists verhalen (case studies) — convenience wrapper.
+   */
+  public async handleListVerhalen(
+    client: WordPressClient,
+    params: PostQueryParams | Record<string, unknown>,
+  ): Promise<WordPressPost[] | string> {
+    if (!params) params = {};
+    (params as Record<string, unknown>).post_type = "verhalen";
+    return this.handleListPosts(client, params);
+  }
+
+  /**
+   * Lists reviews (testimonials) — convenience wrapper.
+   */
+  public async handleListReviews(
+    client: WordPressClient,
+    params: PostQueryParams | Record<string, unknown>,
+  ): Promise<WordPressPost[] | string> {
+    if (!params) params = {};
+    (params as Record<string, unknown>).post_type = "review";
+    return this.handleListPosts(client, params);
   }
 
   /**
@@ -159,6 +199,14 @@ export class PostTools {
     client: WordPressClient,
     params: { id: number } | Record<string, unknown>,
   ): Promise<WordPressPost | string> {
+    const postType = ((params as Record<string, unknown>).post_type as string) || undefined;
+
+    if (postType) {
+      const id = params.id as number;
+      const post = await client.getPost(id, "view", postType);
+      return post;
+    }
+
     // Extract only the relevant parameters
     const postParams = {
       id: params.id as number,

@@ -25,44 +25,52 @@ export class PostsOperations {
   /**
    * Get a list of posts with optional filtering
    */
-  async getPosts(params?: PostQueryParams): Promise<WordPressPost[]> {
+  async getPosts(params?: PostQueryParams, postType: string = "posts"): Promise<WordPressPost[]> {
     const queryString = params ? "?" + new URLSearchParams(params as Record<string, string>).toString() : "";
-    return this.client.get<WordPressPost[]>(`posts${queryString}`);
+    return this.client.get<WordPressPost[]>(`${postType}${queryString}`);
   }
 
   /**
    * Get a single post by ID
    */
-  async getPost(id: number, context: "view" | "embed" | "edit" = "view"): Promise<WordPressPost> {
-    return this.client.get<WordPressPost>(`posts/${id}?context=${context}`);
+  async getPost(
+    id: number,
+    context: "view" | "embed" | "edit" = "view",
+    postType: string = "posts",
+  ): Promise<WordPressPost> {
+    return this.client.get<WordPressPost>(`${postType}/${id}?context=${context}`);
   }
 
   /**
    * Create a new post
    */
-  async createPost(data: CreatePostRequest): Promise<WordPressPost> {
-    return this.client.post<WordPressPost>("posts", data);
+  async createPost(data: CreatePostRequest, postType: string = "posts"): Promise<WordPressPost> {
+    return this.client.post<WordPressPost>(postType, data);
   }
 
   /**
    * Update an existing post
    */
-  async updatePost(data: UpdatePostRequest): Promise<WordPressPost> {
+  async updatePost(data: UpdatePostRequest, postType: string = "posts"): Promise<WordPressPost> {
     const { id, ...updateData } = data;
-    return this.client.put<WordPressPost>(`posts/${id}`, updateData);
+    return this.client.put<WordPressPost>(`${postType}/${id}`, updateData);
   }
 
   /**
    * Delete a post
    */
-  async deletePost(id: number, force = false): Promise<{ deleted: boolean; previous?: WordPressPost }> {
-    return this.client.delete(`posts/${id}?force=${force}`);
+  async deletePost(
+    id: number,
+    force = false,
+    postType: string = "posts",
+  ): Promise<{ deleted: boolean; previous?: WordPressPost }> {
+    return this.client.delete(`${postType}/${id}?force=${force}`);
   }
 
   /**
    * Get post revisions
    */
-  async getPostRevisions(id: number): Promise<WordPressPost[]> {
-    return this.client.get<WordPressPost[]>(`posts/${id}/revisions`);
+  async getPostRevisions(id: number, postType: string = "posts"): Promise<WordPressPost[]> {
+    return this.client.get<WordPressPost[]>(`${postType}/${id}/revisions`);
   }
 }

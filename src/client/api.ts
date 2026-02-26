@@ -877,28 +877,32 @@ export class WordPressClient implements IWordPressClient {
   // Posts Operations (delegated to PostsOperations)
   // ============================================================================
 
-  async getPosts(params?: PostQueryParams): Promise<WordPressPost[]> {
-    return this.postsOps.getPosts(params);
+  async getPosts(params?: PostQueryParams, postType?: string): Promise<WordPressPost[]> {
+    return this.postsOps.getPosts(params, postType);
   }
 
-  async getPost(id: number, context: "view" | "embed" | "edit" = "view"): Promise<WordPressPost> {
-    return this.postsOps.getPost(id, context);
+  async getPost(id: number, context: "view" | "embed" | "edit" = "view", postType?: string): Promise<WordPressPost> {
+    return this.postsOps.getPost(id, context, postType);
   }
 
-  async createPost(data: CreatePostRequest): Promise<WordPressPost> {
-    return this.postsOps.createPost(data);
+  async createPost(data: CreatePostRequest, postType?: string): Promise<WordPressPost> {
+    return this.postsOps.createPost(data, postType);
   }
 
-  async updatePost(data: UpdatePostRequest): Promise<WordPressPost> {
-    return this.postsOps.updatePost(data);
+  async updatePost(data: UpdatePostRequest, postType?: string): Promise<WordPressPost> {
+    return this.postsOps.updatePost(data, postType);
   }
 
-  async deletePost(id: number, force = false): Promise<{ deleted: boolean; previous?: WordPressPost }> {
-    return this.postsOps.deletePost(id, force);
+  async deletePost(
+    id: number,
+    force = false,
+    postType?: string,
+  ): Promise<{ deleted: boolean; previous?: WordPressPost }> {
+    return this.postsOps.deletePost(id, force, postType);
   }
 
-  async getPostRevisions(id: number): Promise<WordPressPost[]> {
-    return this.postsOps.getPostRevisions(id);
+  async getPostRevisions(id: number, postType?: string): Promise<WordPressPost[]> {
+    return this.postsOps.getPostRevisions(id, postType);
   }
 
   // ============================================================================

@@ -48,6 +48,63 @@ export const listPostsTool: MCPTool = {
         items: { type: "number" },
         description: "Limit results to posts with specific tag IDs.",
       },
+      post_type: {
+        type: "string",
+        description:
+          "The REST API base for the post type. Default: 'posts'. Use 'verhalen' for case studies or 'review' for reviews.",
+      },
+    },
+  },
+};
+
+/**
+ * Tool definition for listing verhalen (case studies)
+ */
+export const listVerhalenTool: MCPTool = {
+  name: "wp_list_verhalen",
+  description: "Lists all verhalen (case studies / success stories) from the WordPress site with full content.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      per_page: {
+        type: "number",
+        description: "Number of items to return per page (max 100).",
+      },
+      search: {
+        type: "string",
+        description: "Limit results to those matching a search term.",
+      },
+      status: {
+        type: "string",
+        description: "Filter by post status.",
+        enum: ["publish", "future", "draft", "pending", "private"],
+      },
+    },
+  },
+};
+
+/**
+ * Tool definition for listing reviews (testimonials)
+ */
+export const listReviewsTool: MCPTool = {
+  name: "wp_list_reviews",
+  description: "Lists all reviews (client testimonials) from the WordPress site.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      per_page: {
+        type: "number",
+        description: "Number of items to return per page (max 100).",
+      },
+      search: {
+        type: "string",
+        description: "Limit results to those matching a search term.",
+      },
+      status: {
+        type: "string",
+        description: "Filter by post status.",
+        enum: ["publish", "future", "draft", "pending", "private"],
+      },
     },
   },
 };
@@ -72,6 +129,11 @@ export const getPostTool: MCPTool = {
       include_content: {
         type: "boolean",
         description: "If true, includes the full HTML content of the post for editing. Default: false",
+      },
+      post_type: {
+        type: "string",
+        description:
+          "The REST API base for the post type. Default: 'posts'. Use 'verhalen' for case studies or 'review' for reviews.",
       },
     },
     required: ["id"],
@@ -249,6 +311,8 @@ export const getPostRevisionsTool: MCPTool = {
  */
 export const postToolDefinitions = [
   listPostsTool,
+  listVerhalenTool,
+  listReviewsTool,
   getPostTool,
   createPostTool,
   updatePostTool,
